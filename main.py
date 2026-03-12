@@ -1,17 +1,16 @@
 import numpy as np
+from numba import njit
 import time
 
 def get_data(filename):
     return np.loadtxt(filename)
 
+@njit
 def leave_one_out(data, current_set, feature_to_add): 
     features = np.array(current_set + [feature_to_add])
     correctly_classified = 0
 
     for i in range(len(data)):
-        object_to_classify = data[i, features]
-        label_object_to_classify = data[i, 0]
-
         nearest_neighbor_distance = float('inf')
         nearest_neighbor_label = None
 
@@ -19,13 +18,16 @@ def leave_one_out(data, current_set, feature_to_add):
             if i == j:
                 continue
 
-            distance = np.sqrt(np.sum((object_to_classify - data[j, features]) ** 2))
+            distance = 0.0
+            for f in features:
+                diff = data[i, f] - data[j, f]
+                distance += diff * diff
 
             if distance < nearest_neighbor_distance:
                 nearest_neighbor_distance = distance
                 nearest_neighbor_label = data[j, 0]
 
-        if label_object_to_classify == nearest_neighbor_label:
+        if data[i, 0] == nearest_neighbor_label:
             correctly_classified += 1
 
     accuracy = correctly_classified / len(data)
