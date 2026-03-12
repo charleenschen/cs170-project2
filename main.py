@@ -1,15 +1,11 @@
 import numpy as np
+import time
 
 def get_data(filename):
-    data = []
-    with open(filename, "r") as f:
-        for line in f:
-            values = list(map(float, line.split()))
-            data.append(values)
-    return data
+    return np.loadtxt(filename)
 
 def leave_one_out(data, current_set, feature_to_add): 
-    features = current_set + [feature_to_add]
+    features = np.array(current_set + [feature_to_add])
     correctly_classified = 0
 
     for i in range(len(data)):
@@ -29,15 +25,14 @@ def leave_one_out(data, current_set, feature_to_add):
                 nearest_neighbor_distance = distance
                 nearest_neighbor_label = data[j, 0]
 
-            if label_object_to_classify == nearest_neighbor_label:
-                correctly_classified += 1
+        if label_object_to_classify == nearest_neighbor_label:
+            correctly_classified += 1
 
     accuracy = correctly_classified / len(data)
     return accuracy
 
 
 def forward_selection(data, num_features):
-    global best_accuracy
     best_accuracy = 0.0
     current_set_of_features = []
     best_set_of_features = []
@@ -45,8 +40,8 @@ def forward_selection(data, num_features):
     for i in range(num_features):
         feature_to_add = None
         best_so_far = 0
-        print("On the %dth level of the search tree", i)
-        for j in range(num_features):
+        print(f"On the {i}th level of the search tree")
+        for j in range(1, num_features + 1):
                 if j in current_set_of_features:
                     continue
                 accuracy = leave_one_out(data, current_set_of_features, j)
@@ -56,8 +51,8 @@ def forward_selection(data, num_features):
                     best_so_far = accuracy;
                     feature_to_add = j
 
-        if best_accuracy >= global_accuracy:
-            global_accuracy = best_accuracy
+        if best_so_far > best_accuracy:
+            best_accuracy = best_so_far
             best_set_of_features = current_set_of_features + [feature_to_add]
     
         current_set_of_features.append(feature_to_add)
@@ -74,8 +69,9 @@ def main():
     algorithm = input()
 
     data = get_data(filename)
-    num_features = len(data)
+    num_features = data.shape[1] - 1
 
+    start = time.time()
     if algorithm == '1':
         forward_selection(data, num_features)
     elif algorithm == '2':
@@ -83,6 +79,8 @@ def main():
     else:
         print ("Invalid selection, defaulting to forward selection")
         forward_selection(data, num_features)
+    end = time.time()
+    print(f"\nSearch completed in {(end - start) / 60:.2f} minutes")
 
 if __name__ == "__main__":
     main()
