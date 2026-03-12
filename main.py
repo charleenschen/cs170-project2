@@ -6,8 +6,7 @@ def get_data(filename):
     return np.loadtxt(filename)
 
 @njit
-def leave_one_out(data, current_set, feature_to_add): 
-    features = np.array(current_set + [feature_to_add])
+def leave_one_out(data, features): 
     correctly_classified = 0
 
     for i in range(len(data)):
@@ -46,7 +45,7 @@ def forward_selection(data, num_features):
         for j in range(1, num_features + 1):
                 if j in current_set_of_features:
                     continue
-                accuracy = leave_one_out(data, current_set_of_features, j)
+                accuracy = leave_one_out(data, np.array(current_set_of_features + [j]))
                 print(f"\tUsing features {set(current_set_of_features + [j])}: accuracy is {accuracy*100:.1f}%")
 
                 if accuracy > best_so_far:
