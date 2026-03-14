@@ -56,7 +56,7 @@ def forward_selection(data, num_features):
             best_set_of_features = current_set_of_features + [feature_to_add]
     
         current_set_of_features.append(feature_to_add)
-        print(f'On level {i}, added feature {feature_to_add}. Current set: {set(current_set_of_features)}, accuracy: {best_accuracy*100:.1f}%\n')
+        print(f'On level {i}, added feature {feature_to_add}. Current set: {set(current_set_of_features)}, accuracy: {best_so_far*100:.1f}%\n')
     print(f"\nFinished. Best feature set found: {set(best_set_of_features)} with accuracy {best_accuracy*100:.1f}%")
 
 def backward_elimination(data, num_features):
