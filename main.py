@@ -61,7 +61,34 @@ def forward_selection(data, num_features):
     print(f"\nFinished. Best feature set found: {set(best_set_of_features)} with accuracy {best_accuracy*100:.1f}%")
 
 def backward_elimination(data, num_features):
-    current_set_of_features = []
+    best_accuracy = 0.0
+    current_set_of_features = list(range(1, num_features + 1))
+    best_set_of_features = list(range(1, num_features + 1))
+
+    best_accuracy = leave_one_out(data, np.array(current_set_of_features))
+    print(f"Starting with all features: {set(current_set_of_features)}, accuracy: {best_accuracy*100:.1f}%\n")
+
+    for i in range(num_features - 1):
+        feature_to_remove = None
+        best_so_far = 0
+        print(f"On the {i}th level of the search tree")
+        for j in current_set_of_features:
+            candidate = [f for f in current_set_of_features if f != j]
+            accuracy = leave_one_out(data, np.array(candidate))
+            print(f"\tUsing features {set(candidate)}: accuracy is {accuracy*100:.1f}%")
+
+            if accuracy > best_so_far:
+                best_so_far = accuracy
+                feature_to_remove = j
+
+        if best_so_far > best_accuracy:
+            best_accuracy = best_so_far
+            best_set_of_features = [f for f in current_set_of_features if f != feature_to_remove]
+        
+        current_set_of_features.remove(feature_to_remove)
+        print(f'On level {i}, removed feature {feature_to_remove}. Current set: {set(current_set_of_features)}, accuracy: {best_accuracy*100:.1f}%\n')
+    print(f"\nFinished. Best feature set found: {set(best_set_of_features)} with accuracy {best_accuracy*100:.1f}%")
+
 
 def main():
     print("Welcome to Charleen's Feature Selection Algorithm.")
