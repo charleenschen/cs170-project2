@@ -116,7 +116,7 @@ def main():
         print ("Invalid selection, defaulting to forward selection")
         forward_selection(data, num_features)
     end = time.time()
-    print(f"\nSearch completed in {(end - start) / 60:.2f} minutes")
+    print(f"\nSearch completed in {(end - start):.2f} seconds")
 
 if __name__ == "__main__":
     main()
