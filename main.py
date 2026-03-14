@@ -104,17 +104,6 @@ def main():
     # algorithm = input()
     algorithm = "2"
 
-    # for i in range(1, data.shape[1]):
-    #     col = data[:, i]
-    #     mean = np.mean(col)
-    #     std = np.std(col)
-    
-    # # Check for zero std to avoid division by zero
-    # if std > 0:
-    #     data[:, i] = (col - mean) / std
-    # else:
-    #     data[:, i] = 0.0
-
     data = get_data(filename)
     num_features = data.shape[1] - 1
 
